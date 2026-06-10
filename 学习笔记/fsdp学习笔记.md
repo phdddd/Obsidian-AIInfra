@@ -2,13 +2,13 @@
 _FullyShardedDataParallel：a wrapper for sharding module parameters across data parallel workers._
 对于一个模型或者模块，通常有两种切分思想：
 **1. 使用分片后的参数执行计算，通信激活值**：例如**megatron中的张量并行**，对linear层的参数进行切分，对中间结果进行通信；优点是不需要对模型参数进行通信，缺点是这种通信不容易与计算重叠，因为连续的计算之间存在依赖关系。
-**2. 通过按需通信参数，执行与完整模型相同的计算**：**ZeRO和FSDP**属于这一类，优点是参数通信不依赖前面的计算，**在通信参数的同时，可以执行与所需参数无关的计算任务**；但要求单个设备的内存可以放下通信后的参数。![Pasted image 20260521223805.png](images/Pasted-image-20260521223805.png)
-## FSDP流程![Pasted image 20260522113112.png](images/Pasted-image-20260522113112.png)
+**2. 通过按需通信参数，执行与完整模型相同的计算**：**ZeRO和FSDP**属于这一类，优点是参数通信不依赖前面的计算，**在通信参数的同时，可以执行与所需参数无关的计算任务**；但要求单个设备的内存可以放下通信后的参数。![Pasted-image-20260521223805.png](images/Pasted-image-20260521223805.png)
+## FSDP流程![Pasted-image-20260522113112.png](images/Pasted-image-20260522113112.png)
 各个进程保留一份本地的模型分片，以FSDP Unit为单位，通过all-gather聚合权重进行前向计算，完成后释放权重；反向传播时再次all-gather聚合权重，利用反向传播过来的误差计算本地的梯度，然后通过reduce-scatter同步梯度，释放完整权重，最后使用通信后的梯度分片更新本地的模型参数。
 
 
 ## FSDP单元unit
-FSDP通过指定`wrap_policy`，模型实例分解为`Unit`单元![Pasted image 20260521224028.png](images/Pasted-image-20260521224028.png)
+FSDP通过指定`wrap_policy`，模型实例分解为`Unit`单元![Pasted-image-20260521224028.png](images/Pasted-image-20260521224028.png)
 在 FSDP2 中，Unit 的本质是 **“网络通信的最小边界封装”**——每个Unit的参数、梯度和优化器状态被分散到通信组的所有设备，独立进行计算和通信；在前向和反向计算期间，FSDP一次只通信当前Unit所需的参数，而其余参数保持分片状态（暂不考虑参数预取）
 - **Unit 内部：** 所有的参数都被 FSDP2 捆绑在一起。当进入这个 Unit 的前向传播时，**整个 Unit 内部的所有参数必须通过一次 NCCL All-Gather 一把组装好**。
 - **Unit 之间：** 相互独立。算完 Unit 0，释放 Unit 0；准备算 Unit 1，再去 All-Gather Unit 1。
@@ -44,7 +44,7 @@ FSDP通过指定`wrap_policy`，模型实例分解为`Unit`单元![Pasted image 
 
 ## 通算重叠
 
-### 通算重叠![Pasted image 20260522113003.png](images/Pasted-image-20260522113003.png)
+### 通算重叠![Pasted-image-20260522113003.png](images/Pasted-image-20260522113003.png)
 前向阶段：
 unit0：通信流执行 AG0（无法被计算掩盖），计算流随后执行 FWD0
 unit1：unit0 的 FWD0 计算时，通信流启动 AG1（被计算掩盖）；AG1 完成后执行 FWD1

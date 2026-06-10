@@ -1,9 +1,9 @@
-# ============================================================
-# Pre-commit: Convert Obsidian wiki-links -> GitHub Markdown
+﻿# ============================================================
+# Pre-commit: Obsidian -> GitHub Markdown
 # ============================================================
 $vault = git rev-parse --show-toplevel
 
-# --- Rename newly pasted images: "Pasted image xxx.png" -> "Pasted-image-xxx.png" ---
+# 1. Rename newly pasted images: "Pasted image xxx.png" -> "Pasted-image-xxx.png"
 Get-ChildItem -Path $vault -Recurse -Filter "Pasted image *.png" -ErrorAction SilentlyContinue | ForEach-Object {
     $newName = $_.Name -replace ' ', '-'
     if ($_.Name -ne $newName) {
@@ -13,17 +13,17 @@ Get-ChildItem -Path $vault -Recurse -Filter "Pasted image *.png" -ErrorAction Si
     }
 }
 
-# --- Convert wiki-links in staged .md files ---
+# 2. Convert wiki-links in staged .md files
 $staged = git -c core.quotepath=false diff --cached --name-only --diff-filter=ACM -- '*.md'
 foreach ($file in $staged) {
     $path = Join-Path $vault $file
     if (-not (Test-Path -LiteralPath $path)) { continue }
 
     $content = [System.IO.File]::ReadAllText($path, [System.Text.Encoding]::UTF8)
-    $newContent = [regex]::Replace($content, '!\[\[Pasted image ([^\]|]+)(?:\|[^\]]+)?\]\]', {
-        $fn = $args[0].Groups[1].Value
-        $fnHyphen = $fn -replace ' ', '-'
-        return "![Pasted image $fn](images/Pasted-image-$fnHyphen)"
+    $newContent = $content
+    # Convert ![[Pasted-image-xxx.png]] -> ![Pasted-image-xxx.png](images/Pasted-image-xxx.png)
+    $newContent = [regex]::Replace($newContent, '!\[\[Pasted-image-(\d+\.png)\]\]', {
+        return "![Pasted-image-$($args[0].Groups[1].Value)](images/Pasted-image-$($args[0].Groups[1].Value))"
     })
 
     if ($newContent -ne $content) {
