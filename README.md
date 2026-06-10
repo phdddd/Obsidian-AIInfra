@@ -1,4 +1,4 @@
-﻿# Obsidian-AIInfra
+# Obsidian-AIInfra
 
 AI Infra 求职学习笔记 —— 基于 Obsidian 的知识库。
 
@@ -40,12 +40,12 @@ git clone https://github.com/phdddd/Obsidian-AIInfra.git
 
 仓库已预装 **Obsidian Git** 插件，开箱即用：
 
-| 功能 | 配置 |
-|------|------|
-| 自动 commit | 文件变更后自动提交 |
-| 自动 push | 每 10 分钟自动推送到 GitHub |
-| 启动 pull | 打开 Obsidian 时自动拉取最新内容 |
-| 冲突处理 | push 前自动 pull，使用 merge 策略 |
+| 功能        | 配置                        |
+| --------- | ------------------------- |
+| 自动 commit | 文件变更后自动提交                 |
+| 自动 push   | 每 10 分钟自动推送到 GitHub       |
+| 启动 pull   | 打开 Obsidian 时自动拉取最新内容     |
+| 冲突处理      | push 前自动 pull，使用 merge 策略 |
 
 右下角状态栏会显示 Git 同步状态，无需手动操作。
 
