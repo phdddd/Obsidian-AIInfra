@@ -1,0 +1,11 @@
+﻿{
+  "autoSaveInterval": 10,
+  "autoPullOnBoot": true,
+  "disablePush": false,
+  "pullBeforePush": true,
+  "disablePopups": false,
+  "showStatusBar": true,
+  "syncMethod": "merge",
+  "commitMessage": "vault backup: {{date}}",
+  "commitDateFormat": "YYYY-MM-DD HH:mm:ss"
+}

@@ -1,0 +1,10 @@
+# Obsidian workspace state ? changes too frequently, causes merge conflicts
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# Obsidian trash
+.trash/
+
+# OS files
+.DS_Store
+Thumbs.db
