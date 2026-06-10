@@ -1,22 +1,23 @@
 ﻿# ============================================================
-# Post-commit: Restore Obsidian wiki-link format in working tree
+# Post-commit: Restore Obsidian wiki-link format in all files
 # ============================================================
 $vault = git rev-parse --show-toplevel
 
-$committed = git -c core.quotepath=false diff-tree --name-only -r HEAD~1 HEAD -- '*.md' 2>$null
-if (-not $committed) { exit 0 }
+Get-ChildItem $vault -Recurse -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+    $content = [System.IO.File]::ReadAllText($_.FullName, [System.Text.Encoding]::UTF8)
+    $newContent = $content
 
-foreach ($file in $committed) {
-    $path = Join-Path $vault $file
-    if (-not (Test-Path -LiteralPath $path)) { continue }
+    # Pattern 1: ![Pasted image xxx.png](images/Pasted-image-xxx.png)
+    $newContent = [regex]::Replace($newContent, '!\[(Pasted image \d+\.png)\]\(images/Pasted-image-\d+\.png\)', {
+        return "![[$($args[0].Groups[1].Value)]]"
+    })
 
-    $content = [System.IO.File]::ReadAllText($path, [System.Text.Encoding]::UTF8)
-    $newContent = [regex]::Replace($content, '!\[(Pasted image \d+\.png)\]\(images/Pasted-image-\d+\.png\)', {
-        $alt = $args[0].Groups[1].Value
-        return "![[$alt]]"
+    # Pattern 2: ![Pasted image xxx.png](<Pasted image xxx.png>)
+    $newContent = [regex]::Replace($newContent, '!\[(Pasted image \d+\.png)\]\(<Pasted image \d+\.png>\)', {
+        return "![[$($args[0].Groups[1].Value)]]"
     })
 
     if ($newContent -ne $content) {
-        [System.IO.File]::WriteAllText($path, $newContent, [System.Text.Encoding]::UTF8)
+        [System.IO.File]::WriteAllText($_.FullName, $newContent, [System.Text.Encoding]::UTF8)
     }
 }
