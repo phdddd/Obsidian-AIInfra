@@ -1,0 +1,2 @@
+#!/bin/sh
+powershell.exe -ExecutionPolicy Bypass -File ".githooks/restore-obsidian.ps1"
