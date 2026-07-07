@@ -1,0 +1,4 @@
+﻿interface:
+  display_name: "Obsidian Vault Sync"
+  short_description: "Setup and maintain Obsidian-GitHub bidirectional sync with automatic format conversion between wiki-links and Markdown"
+  default_prompt: "Help me set up or troubleshoot the Obsidian vault GitHub sync system. This vault uses a dual-format approach: Obsidian wiki-links locally, GitHub Markdown in commits, with automatic conversion scripts in .githooks/."
