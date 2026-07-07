@@ -1,38 +1,51 @@
-﻿---
+---
 name: obsidian-vault-sync
-description: Setup and maintain Obsidian vault-to-GitHub bidirectional sync with automatic format conversion. Use when setting up a cloned Obsidian vault on a new machine, configuring Obsidian Git plugin, fixing image display issues between Obsidian and GitHub, creating git hooks for format conversion, or troubleshooting the sync workflow in this vault (Obsidian-AIInfra).
+description: Setup and maintain Obsidian vault-to-GitHub bidirectional sync with automatic format conversion. Use when setting up a cloned Obsidian vault on a new machine, configuring Obsidian Git plugin, fixing image display issues between Obsidian and GitHub, creating git hooks for format conversion, or troubleshooting the sync workflow in the Obsidian-AIInfra vault.
 ---
 
 # Obsidian Vault GitHub Sync
 
-This vault uses a dual-format system: Obsidian wiki-links in the working tree, GitHub-compatible Markdown in commits. Three PowerShell scripts handle automatic conversion.
+Dual-format system: Obsidian wiki-links in the working tree, GitHub Markdown in commits. Scripts in `.githooks/` handle automatic conversion.
+
+Vault repo: `https://github.com/phdddd/Obsidian-AIInfra`
+
+## Installing the Skill in Codex
+
+```powershell
+$pluginDir = "$env:USERPROFILE\.codex\plugins\obsidian-vault-sync"
+New-Item -ItemType Directory -Path "$pluginDir\skills\obsidian-vault-sync" -Force
+Copy-Item -Recurse "skills/obsidian-vault-sync/*" "$pluginDir\skills\obsidian-vault-sync\" -Force
+# Create .codex-plugin/plugin.json - see below
+python "$env:CODEX_HOME\skills\.system\plugin-creator\scripts\validate_plugin.py" $pluginDir
+python "$env:CODEX_HOME\skills\.system\plugin-creator\scripts\update_plugin_cachebuster.py" $pluginDir
+# Restart Codex -> "/" -> "Obsidian Vault Sync"
+```
 
 ## Architecture
 
 ```
 Working tree (Obsidian)          Git commit (GitHub)
-![[Pasted-image-xxx.png]]   ←→   ![Pasted-image-xxx.png](../images/Pasted-image-xxx.png)
+![[Pasted-image-xxx.png]]   <->   ![Pasted-image-xxx.png](../images/Pasted-image-xxx.png)
 ```
 
-**Conversion layer**: `scripts/convert-to-github.ps1` (Obsidian→GitHub), `scripts/restore-obsidian.ps1` (GitHub→Obsidian). Both live in `.githooks/` and are triggered by git hooks OR the Obsidian Git plugin's `commitMessageScript`.
+**Conversion layer**: `convert-to-github.ps1` (Obsidian->GitHub), `restore-obsidian.ps1` (GitHub->Obsidian). Both in `.githooks/`, triggered by git hooks or the Obsidian Git plugin's `commitMessageScript`.
 
-## Directory Structure Rules
+## Directory Structure
 
 Each top-level content folder has its own `images/` subfolder:
 
 ```
 vault/
 ├── 学习笔记/
-│   ├── images/           ← All images for this section
+│   ├── images/            All images for this section
 │   ├── 基础概念/
-│   ├── 训练/
-│   └── ...
+│   └── 训练/
 ├── AI生成/
-│   └── images/           ← Images for this section (when needed)
+│   └── images/
 └── ...
 ```
 
-Images are named `Pasted-image-YYYYMMDDHHmmss.png` (hyphens, no spaces).
+Images: `Pasted-image-YYYYMMDDHHmmss.png` (hyphens, never spaces).
 
 ## New Machine Setup
 
@@ -42,7 +55,7 @@ Images are named `Pasted-image-YYYYMMDDHHmmss.png` (hyphens, no spaces).
 git clone https://github.com/phdddd/Obsidian-AIInfra.git
 ```
 
-If behind a proxy (China mainland), configure git first:
+Proxy config (China mainland):
 ```bash
 git config --global http.proxy http://127.0.0.1:10090
 git config --global https.proxy http://127.0.0.1:10090
@@ -51,65 +64,45 @@ git config --global http.sslVerify false
 
 ### 2. Open in Obsidian
 
-Open the cloned folder as a vault. The `.obsidian/` config (including the Git plugin) is already included.
+Open the cloned folder as a vault. `.obsidian/` config (including Git plugin) is pre-packaged.
 
 ### 3. Verify Obsidian Git Plugin
 
-The plugin is pre-installed and pre-configured. Open Settings → Community Plugins → Git. Verify:
-- Auto commit interval: 10 minutes (or adjust as needed)
+Settings -> Community Plugins -> Git:
+- Auto commit interval: 10 minutes
 - Pull on startup: enabled
 
-### 4. Set Git Hooks
+### 4. Activate Git Hooks
 
 ```bash
 git config core.hooksPath .githooks
 ```
 
-The hooks are already in `.githooks/` and `.git/hooks/`. If the Obsidian Git plugin doesn't trigger them, the `commitMessageScript` in the plugin's `data.json` handles conversion as a fallback.
+Hooks are pre-installed in `.githooks/` and `.git/hooks/`. If the plugin doesn't trigger them, `commitMessageScript` in the plugin's `data.json` handles conversion as fallback.
 
 ### 5. Set Attachment Folder
 
-In Obsidian Settings → Files & Links → Attachment folder path: set to the active section's images folder (e.g., `学习笔记/images`).
+Obsidian Settings -> Files & Links -> Attachment folder path: `学习笔记/images`
 
 ## Conversion Scripts
 
-### `scripts/convert-to-github.ps1` (run before commit)
+### `convert-to-github.ps1` (pre-commit)
 
-1. Renames any `Pasted image *.png` → `Pasted-image-*.png` (spaces→hyphens)
-2. Converts `![[Pasted-image-xxx.png]]` → `![Pasted-image-xxx.png](<relative>/Pasted-image-xxx.png)`
-3. Computes relative path based on file depth (e.g., `../images/` for files in subdirectories)
+1. Renames `Pasted image *.png` -> `Pasted-image-*.png`
+2. Converts `![[Pasted-image-xxx.png]]` -> `![Pasted-image-xxx.png](<relative>/Pasted-image-xxx.png)`
+3. Relative path computed from file depth: `("../" * (depth-1)) + "images/"`
 
-### `scripts/restore-obsidian.ps1` (run after commit/pull)
+### `restore-obsidian.ps1` (post-commit / post-merge)
 
 Converts `![Pasted-image-xxx.png](<any-path>/Pasted-image-xxx.png)` back to `![[Pasted-image-xxx.png]]` in all `.md` files.
 
-### Manual Conversion
-
-To manually convert the working tree before a push (if hooks/plugin script aren't working):
-
-```powershell
-# Convert Obsidian → GitHub
-Get-ChildItem . -Recurse -Filter "*.md" | ForEach-Object {
-    $c = [System.IO.File]::ReadAllText($_.FullName)
-    $n = [regex]::Replace($c, '!\[\[Pasted-image-(\d+\.png)\]\]', {
-        $fn = $args[0].Groups[1].Value
-        # Compute depth from vault root
-        $parts = ($_.FullName -replace [regex]::Escape($pwd.Path), '').TrimStart('\') -split '[/\\]'
-        $depth = $parts.Count - 1
-        $prefix = if ($depth -le 1) { 'images/' } else { ('../' * ($depth - 1)) + 'images/' }
-        return "![Pasted-image-$fn]($($prefix)Pasted-image-$fn)"
-    })
-    if ($n -ne $c) { [System.IO.File]::WriteAllText($_.FullName, $n) }
-}
-```
-
 ## Troubleshooting
 
-| Problem | Fix |
-|---------|-----|
-| GitHub images broken | Run `convert-to-github.ps1` manually, then commit+push |
-| Obsidian images broken | Run `restore-obsidian.ps1` to convert back to wiki-links |
-| Push fails with SSL error | Set `git config --global http.sslVerify false` |
-| Push fails with connection error | Check proxy config or try different proxy port |
-| Obsidian Git plugin doesn't trigger hooks | Use `commitMessageScript` in plugin's `data.json` |
-| New images paste with spaces | Pre-commit hook auto-renames them, or manually rename `Pasted image *.png` → `Pasted-image-*.png` |
+| Problem                        | Fix                                                                             |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| GitHub images broken           | Run `convert-to-github.ps1` manually, then commit+push                          |
+| Obsidian images broken         | Run `restore-obsidian.ps1` to convert back to wiki-links                        |
+| Push fails: SSL error          | `git config --global http.sslVerify false`                                      |
+| Push fails: connection refused | Check proxy at `127.0.0.1:10090` or try `127.0.0.1:7897`                        |
+| Hooks not triggered by plugin  | Ensure `commitMessageScript` is set in plugin's `data.json`                     |
+| Images paste with spaces       | Pre-commit hook auto-renames; or manually: `Pasted image *` -> `Pasted-image-*` |
