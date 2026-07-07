@@ -1,2 +1,2 @@
 #!/bin/sh
-powershell.exe -ExecutionPolicy Bypass -File ".githooks/convert-to-github.ps1"
+echo HOOK_RAN > "E:\obsidian??\AI infra??\AI infra??\.githooks\hook-test.log"
