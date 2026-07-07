@@ -1,2 +1,3 @@
 #!/bin/sh
-echo HOOK_RAN > "E:\obsidian??\AI infra??\AI infra??\.githooks\hook-test.log"
+VAULT=$(git rev-parse --show-toplevel)
+/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -ExecutionPolicy Bypass -File "$VAULT/.githooks/convert-to-github.ps1"
