@@ -7,5 +7,6 @@
   "showStatusBar": true,
   "syncMethod": "merge",
   "commitMessage": "vault backup: {{date}}",
-  "commitDateFormat": "YYYY-MM-DD HH:mm:ss"
+  "commitDateFormat": "YYYY-MM-DD HH:mm:ss",
+  "commitMessageScript": "/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -ExecutionPolicy Bypass -File \".githooks/convert-before-commit.ps1\"; echo \"vault backup: {{date}}\""
 }
