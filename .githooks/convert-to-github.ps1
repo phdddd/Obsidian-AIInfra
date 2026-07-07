@@ -1,4 +1,4 @@
-﻿# ============================================================
+# ============================================================
 # Pre-commit: Obsidian -> GitHub Markdown
 # Computes relative image path based on file location
 # ============================================================
@@ -15,7 +15,7 @@ Get-ChildItem -Path $vault -Recurse -Filter "Pasted image *.png" -ErrorAction Si
 }
 
 # 2. Convert wiki-links in staged .md files
-$staged = git -c core.quotepath=false diff --cached --name-only --diff-filter=ACM -- '*.md'
+$staged = git -c core.quotepath=false diff --cached --name-only --diff-filter=ACMR -- '*.md'
 foreach ($file in $staged) {
     $path = Join-Path $vault $file
     if (-not (Test-Path -LiteralPath $path)) { continue }
