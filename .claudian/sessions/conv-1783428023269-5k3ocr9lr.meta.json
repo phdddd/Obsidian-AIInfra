@@ -1,0 +1,24 @@
+{
+  "id": "conv-1783428023269-5k3ocr9lr",
+  "providerId": "claude",
+  "title": "你好，你现在是什么模型",
+  "titleGenerationStatus": "failed",
+  "createdAt": 1783428023275,
+  "updatedAt": 1783428199503,
+  "lastResponseAt": 1783428199503,
+  "sessionId": "b91857ad-d01f-4afb-b2e5-c2ccc9bc76c4",
+  "providerState": {
+    "providerSessionId": "b91857ad-d01f-4afb-b2e5-c2ccc9bc76c4"
+  },
+  "currentNote": "学习笔记/推理/推理优化.md",
+  "usage": {
+    "model": "haiku",
+    "inputTokens": 2992,
+    "cacheCreationInputTokens": 199,
+    "cacheReadInputTokens": 2777,
+    "contextWindow": 200000,
+    "contextTokens": 5968,
+    "percentage": 3,
+    "contextWindowIsAuthoritative": true
+  }
+}

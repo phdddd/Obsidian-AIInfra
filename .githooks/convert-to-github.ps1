@@ -1,5 +1,6 @@
 ﻿# ============================================================
 # Pre-commit: Obsidian -> GitHub Markdown
+# Computes relative image path based on file location
 # ============================================================
 $vault = git rev-parse --show-toplevel
 
@@ -20,10 +21,16 @@ foreach ($file in $staged) {
     if (-not (Test-Path -LiteralPath $path)) { continue }
 
     $content = [System.IO.File]::ReadAllText($path, [System.Text.Encoding]::UTF8)
-    $newContent = $content
-    # Convert ![[Pasted-image-xxx.png]] -> ![Pasted-image-xxx.png](images/Pasted-image-xxx.png)
-    $newContent = [regex]::Replace($newContent, '!\[\[Pasted-image-(\d+\.png)\]\]', {
-        return "![Pasted-image-$($args[0].Groups[1].Value)](images/Pasted-image-$($args[0].Groups[1].Value))"
+
+    # Compute relative path to the section's images/ folder
+    $parts = $file -split '[/\\]'
+    $depth = $parts.Count - 1  # 1 = in section root, 2+ = in subdir
+    if ($depth -le 1) { $imgPrefix = "images/" }
+    else { $imgPrefix = ("../" * ($depth - 1)) + "images/" }
+
+    $newContent = [regex]::Replace($content, '!\[\[Pasted-image-(\d+\.png)\]\]', {
+        $fn = $args[0].Groups[1].Value
+        return "![Pasted-image-$fn]($($imgPrefix)Pasted-image-$fn)"
     })
 
     if ($newContent -ne $content) {
