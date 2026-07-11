@@ -6,63 +6,43 @@ AI Infra 求职学习笔记 —— 基于 Obsidian 的知识库。
 
 ```
 .
-├── 学习笔记/           # 核心笔记：分布式并行、FSDP、Megatron、强化学习等
-├── 学习计划安排/       # 月度/周度复习计划
-├── images/            # 笔记中引用的图片
-├── .obsidian/         # Obsidian 配置（含 Git 自动同步插件）
-├── 欢迎.md            # Obsidian 欢迎页
-├── 简历完善.md         # 简历相关
-└── 常用命令.md         # 常用命令速查
+├── 学习笔记/
+│   ├── images/          # 学习笔记板块的所有图片
+│   ├── 基础概念/         # 分布式并行、张量并行、MoE 等
+│   ├── 训练/            # FSDP、Megatron
+│   ├── 强化学习/         # Verl、算法基础
+│   └── 推理/            # 推理优化、推理框架
+├── AI生成/
+│   └── images/          # AI 生成板块图片（预留）
+├── 学习计划安排/
+├── .obsidian/           # Obsidian 配置（含 Git 自动同步插件）
+├── .githooks/           # 格式转换脚本（Obsidian ↔ GitHub）
+└── README.md
 ```
 
-## 快速开始（新机器）
-
-### 1. 克隆仓库
+## 新机器克隆使用
 
 ```bash
 git clone https://github.com/phdddd/Obsidian-AIInfra.git
 ```
 
-> 国内用户如果无法访问 GitHub，需要配置代理：
-> ```bash
-> git config --global http.proxy http://127.0.0.1:7897
-> git config --global https.proxy http://127.0.0.1:7897
-> ```
+用 Obsidian 打开文件夹作为 vault 即可。Git 插件和 hooks 预装好了，开箱即用。
 
-### 2. 用 Obsidian 打开
+## 自动同步
 
-1. 安装 [Obsidian](https://obsidian.md)
-2. 打开 Obsidian → 点击 "Open folder as vault"
-3. 选择刚才克隆的 `Obsidian-AIInfra` 文件夹
-4. 如果提示 "Safe mode"，选择 "Turn off Safe Mode" 以启用 Git 插件
+仓库预装 Obsidian Git 插件和格式转换 hooks：
 
-### 3. 自动同步已就绪
+| 机制               | 作用                                            |
+| ---------------- | --------------------------------------------- |
+| Obsidian Git 插件  | 每 10 分钟自动 commit + push                       |
+| pre-commit hook  | 提交前自动将 `![[...]]` 转为 GitHub 兼容的 `![...](...)` |
+| post-commit hook | 提交后自动还原为 Obsidian wiki-link 格式                |
+| 启动 pull          | 打开 Obsidian 时自动拉取最新内容                         |
 
-仓库已预装 **Obsidian Git** 插件，开箱即用：
-
-| 功能        | 配置                        |
-| --------- | ------------------------- |
-| 自动 commit | 文件变更后自动提交                 |
-| 自动 push   | 每 10 分钟自动推送到 GitHub       |
-| 启动 pull   | 打开 Obsidian 时自动拉取最新内容     |
-| 冲突处理      | push 前自动 pull，使用 merge 策略 |
-
-右下角状态栏会显示 Git 同步状态，无需手动操作。
-
-> 首次在新机器上编辑后 push 时，可能需要登录 GitHub 授权。Obsidian 内会弹出认证窗口。
-
-### 4. 手动同步
-
-如果需要立即同步，按 `Ctrl+P` 打开命令面板，搜索：
-- `Git: Commit and push` — 手动提交并推送
-- `Git: Pull` — 手动拉取
+你只需要在 Obsidian 里正常编辑笔记，同步全自动。
 
 ## 注意事项
 
-- 图片使用标准 Markdown 语法（兼容 GitHub 渲染），不要使用 `![[...]]` wiki-link 格式
-- 粘贴图片到 Obsidian 时会自动存为 `Pasted image xxx.png`，需要手动移动到 `images/` 文件夹并更新引用路径
-- `.obsidian/workspace.json` 已加入 `.gitignore`，不会同步个人窗口布局
-
-## 贡献
-
-这是个人学习笔记，欢迎 Fork 和 Star。如有问题请提 Issue。
+- 图片统一命名 `Pasted-image-YYYYMMDDHHmmss.png`（横线，无空格）
+- 每个板块的图片存在各自 `images/` 子文件夹下
+- `.obsidian/workspace.json` 已加入 `.gitignore`，不同步窗口布局
