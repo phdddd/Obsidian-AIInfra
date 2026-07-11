@@ -14,7 +14,6 @@ AI Infra 求职学习笔记 —— 基于 Obsidian 的知识库。
 │   └── 推理/            # 推理优化、推理框架
 ├── AI生成/
 │   └── images/          # AI 生成板块图片（预留）
-├── 学习计划安排/
 ├── .obsidian/           # Obsidian 配置（含 Git 自动同步插件）
 ├── .githooks/           # 格式转换脚本（Obsidian ↔ GitHub）
 └── README.md
