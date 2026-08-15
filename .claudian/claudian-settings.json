@@ -1,7 +1,7 @@
 {
   "userName": "",
   "permissionMode": "yolo",
-  "model": "opus",
+  "model": "glm-5.2",
   "thinkingBudget": "off",
   "effortLevel": "high",
   "serviceTier": "default",
@@ -32,8 +32,8 @@
       "enableBangBash": false,
       "enableOpus1M": false,
       "enableSonnet1M": false,
-      "customModels": "",
-      "lastModel": "opus",
+      "customModels": "glm-5.2",
+      "lastModel": "glm-5.2",
       "environmentVariables": "",
       "environmentHash": ""
     },
@@ -81,7 +81,7 @@
   },
   "settingsProvider": "claude",
   "savedProviderModel": {
-    "claude": "opus"
+    "claude": "glm-5.2"
   },
   "savedProviderEffort": {
     "claude": "high"

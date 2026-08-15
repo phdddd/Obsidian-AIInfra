@@ -2,10 +2,56 @@
   "tabManagerState": {
     "openTabs": [
       {
-        "tabId": "tab-1781181338252-1dw4qsf",
-        "conversationId": "conv-1783428023269-5k3ocr9lr"
+        "tabId": "tab-1786809646851-q1t7bd1",
+        "conversationId": "conv-1786811176126-0jxk2u4j4"
       }
     ],
-    "activeTabId": "tab-1781181338252-1dw4qsf"
+    "activeTabId": "tab-1786809646851-q1t7bd1"
+  },
+  "providerConfigs": {
+    "codex": {
+      "enabled": false,
+      "safeMode": "workspace-write",
+      "cliPath": "D:/Program Files/node-v24.18.0-win-x64/codex.cmd",
+      "cliPathsByHost": {},
+      "customModels": "",
+      "discoveredModels": [],
+      "modelAliases": {},
+      "visibleModels": [],
+      "enableUltraEffort": false,
+      "reasoningSummary": "detailed",
+      "environmentVariables": "",
+      "environmentHash": "",
+      "catalogTimestamp": 0,
+      "catalogFingerprint": "",
+      "installationMethodsByHost": {},
+      "wslDistroOverridesByHost": {}
+    },
+    "claude": {
+      "enabled": true,
+      "safeMode": "workspace-write",
+      "cliPath": "C:/claude-bin/claude.exe",
+      "cliPathsByHost": {},
+      "customModels": "glm-5.2",
+      "discoveredModels": [],
+      "modelAliases": {},
+      "visibleModels": [
+        "glm-5.2"
+      ],
+      "enableUltraEffort": false,
+      "reasoningSummary": "detailed",
+      "defaultModel": "glm-5.2",
+      "environmentVariables": "ANTHROPIC_AUTH_TOKEN=242f191e-5ff0-400b-b100-e67c75428f58\nANTHROPIC_BASE_URL=https://st8tp3ajl0df3n8b8l8qu.apigateway-cn-beijing.volceapi.com/compatible",
+      "environmentHash": "",
+      "catalogTimestamp": 0,
+      "catalogFingerprint": "",
+      "installationMethodsByHost": {},
+      "wslDistroOverridesByHost": {}
+    }
+  },
+  "settingsProvider": "claude",
+  "lastSelectedChatModel": {
+    "providerId": "claude",
+    "model": "claude-code/glm-5.2"
   }
 }
