@@ -65829,6 +65829,7 @@ init_path();
 var SESSION_ERROR_PATTERNS = [
   "session expired",
   "session not found",
+  "no conversation found with session id",
   "invalid session",
   "session invalid",
   "process exited with code"

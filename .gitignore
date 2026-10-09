@@ -8,3 +8,13 @@
 # OS files
 .DS_Store
 Thumbs.db
+
+# Claudian per-machine settings, credentials and sessions
+.claudian/claudian-settings.json
+.claudian/sessions/
+
+# Claudian plugin runtime state (CLI paths, model selection and credentials)
+.obsidian/plugins/realclaudian/data.json
+
+# Obsidian Git machine-specific settings and scripts
+.obsidian/plugins/obsidian-git/data.json
